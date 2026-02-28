@@ -40,7 +40,7 @@ const data = {
   navMain: [
     {
       title: "Home",
-      url: "/",
+      url: "/home",
       icon: IconHome,
     },
     {
