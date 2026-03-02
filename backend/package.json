@@ -4,13 +4,16 @@
   "description": "This is a eook api project repository",
   "license": "ISC",
   "author": "Sayak Mallick <sayakmallickkv@gmail.com>",
-  "type": "commonjs",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon server.ts"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/dotenv": "^6.1.1",
+    "@types/express": "^5.0.6",
+    "@types/mongoose": "^5.11.96",
     "@types/node": "^25.3.3",
     "eslint": "^10.0.2",
     "globals": "^17.4.0",
@@ -19,5 +22,10 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.56.1"
+  },
+  "dependencies": {
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "mongoose": "^9.2.3"
   }
 }
