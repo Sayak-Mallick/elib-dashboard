@@ -1,7 +1,5 @@
-/* eslint-disable */
-// @ts-nocheck
 import mongoose from "mongoose";
-import { config } from "./config.ts";
+import { config } from "./config";
 
 const connectDB = async () => {
   try {
@@ -17,10 +15,9 @@ const connectDB = async () => {
       console.warn("⚠️ MongoDB disconnected");
     });
 
-    await mongoose.connect(config.dbUrlb as string, {
+    await mongoose.connect(config.dbUrl as string, {
       dbName: `${config.dbName}`,
     });
-
   } catch (error) {
     console.error("❌ Error connecting to MongoDB:", error);
     process.exit(1);
