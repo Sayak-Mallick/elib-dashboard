@@ -1,9 +1,12 @@
 {
   "name": "backend",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
+    "release:patch": "npm version patch",
+    "release:minor": "npm version minor",
+    "release:major": "npm version major",
     "start": "npm run build && node dist/index.js",
     "dev": "nodemon src/index.ts",
     "build": "tsc"
