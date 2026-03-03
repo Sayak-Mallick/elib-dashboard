@@ -70,16 +70,25 @@ const loginUser = async (req: Request, res: Response, next: NextFunction) => {
     return next(error);
   }
 
-  const user = await userModel.findOne({ email: email });
-  if (!user) {
-    const error = createHttpError(404, '🔍 User not found with this email');
-    return next(error);
+  let user: User | null;
+  try {
+    user = await userModel.findOne({ email: email });
+    if (!user) {
+      const error = createHttpError(404, '🔍 User not found with this email');
+      return next(error);
+    }
+  } catch (error) {
+    return next(createHttpError(500, 'Internal server error while fetching user'));
   }
 
-  const isMatch = await bcyrpt.compare(password, user.password);
-  if (!isMatch) {
-    const error = createHttpError(400, '🔒 Invalid email or password');
-    return next(error);
+  try {
+    const isMatch = await bcyrpt.compare(password, user.password);
+    if (!isMatch) {
+      const error = createHttpError(400, '🔒 Invalid email or password');
+      return next(error);
+    }
+  } catch (error) {
+    return next(createHttpError(500, 'Internal server error while verifying password'));
   }
 
   // JWT token generation for authentication
