@@ -27,7 +27,6 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
   } catch (err) {
     return next(createHttpError(500, 'Internal server error while checking for existing user'));
   }
-  
 
   // Password hashing
   const hashedPassword = await bcyrpt.hash(password, 10);
@@ -52,14 +51,50 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
     });
 
     // Response with success message or error if registration fails
-    res.json({
+    res.status(201).json({
       accessToken: token,
       message: '✅ User registered successfully',
     });
   } catch (error) {
     return next(createHttpError(500, 'Internal server error while generating token'));
   }
-  
+
 }
 
-export { createUser };
+const loginUser = async (req: Request, res: Response, next: NextFunction) => {
+  const { email, password } = req.body;
+
+  // Basic Validation
+  if (!email || !password) {
+    const error = createHttpError(400, 'Email and password are required');
+    return next(error);
+  }
+
+  const user = await userModel.findOne({ email: email });
+  if (!user) {
+    const error = createHttpError(404, '🔍 User not found with this email');
+    return next(error);
+  }
+
+  const isMatch = await bcyrpt.compare(password, user.password);
+  if (!isMatch) {
+    const error = createHttpError(400, '🔒 Invalid email or password');
+    return next(error);
+  }
+
+  // JWT token generation for authentication
+  try {
+    const token = sign({ sub: user._id }, config.jwtSecret as string, {
+      expiresIn: '7d',
+      algorithm: 'HS256',
+    });
+    res.status(201).json({
+      message: '✅ OK',
+      accessToken: token,
+    })
+  } catch (error) {
+    return next(createHttpError(500, 'Internal server error while generating token'));
+  }
+}
+
+export { createUser, loginUser };
