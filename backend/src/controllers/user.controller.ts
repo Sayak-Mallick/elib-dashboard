@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import createHttpError from "http-errors";
 import bcyrpt from "bcrypt";
 import userModel from "../models/user.model";
+import { sign } from "jsonwebtoken";
+import { config } from "../config/config";
 
 const createUser = async (req: Request, res: Response, next: NextFunction) => {
   const { name, email, password } = req.body;
@@ -30,10 +32,16 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
     email,
     password: hashedPassword,
   });
+
   // JWT token generation for authentication
+  const token = sign({ sub: newUser._id }, config.jwtSecret as string, { 
+    expiresIn: '7d',
+    algorithm: 'HS256',
+  });
+
   // Response with success message or error if registration fails
   res.json({
-    id: newUser._id,
+    accessToken: token,
     message: '✅ User registered successfully',
   });
 }
