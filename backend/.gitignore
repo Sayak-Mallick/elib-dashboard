@@ -41,6 +41,7 @@ build/Release
 node_modules/
 jspm_packages/
 package-lock.json
+.idea
 
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
@@ -138,6 +139,7 @@ dist
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+.idea/
 
 # Vite files
 vite.config.js.timestamp-*
