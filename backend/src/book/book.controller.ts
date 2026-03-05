@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import path from "node:path";
 import cloudinary from "../config/cloudinary";
 import createHttpError from "http-errors";
+import bookModel from "./book.model";
+import fs from "fs";
 
 const createBook = async (req: Request, res: Response, next: NextFunction) => {
   const { title, genre, description } = req.body;
@@ -39,7 +41,26 @@ const createBook = async (req: Request, res: Response, next: NextFunction) => {
       },
     );
 
-    res.json({});
+    try {
+      const _req = req as any;
+      const newBook = await bookModel.create({
+        title,
+        genre,
+        description,
+        author: _req.userId,
+        coverImage: uploadResult.secure_url,
+        file: bookFileUploadResult.secure_url,
+      });
+
+      // Delete the temporary files after upload
+      await fs.promises.unlink(filePath);
+      await fs.promises.unlink(bookFilePath);
+
+      res.status(201).json({ id: newBook._id, message: "✅ Book created successfully" });
+    } catch (error) {
+      return next(createHttpError(500, "Internal server error while creating book"));
+    }
+
   } catch (err) {
     console.log(err);
     return next(createHttpError(500, "Error while uploading files"));
