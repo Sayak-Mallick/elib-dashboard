@@ -4,6 +4,7 @@ import cloudinary from "../config/cloudinary";
 import createHttpError from "http-errors";
 import bookModel from "./book.model";
 import fs from "fs";
+import { AuthRequest } from "../middlewares/authenticate";
 
 const createBook = async (req: Request, res: Response, next: NextFunction) => {
   const { title, genre, description } = req.body;
@@ -42,7 +43,7 @@ const createBook = async (req: Request, res: Response, next: NextFunction) => {
     );
 
     try {
-      const _req = req as any;
+      const _req = req as AuthRequest;
       const newBook = await bookModel.create({
         title,
         genre,
